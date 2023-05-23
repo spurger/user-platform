@@ -3,6 +3,7 @@ import { ref } from "vue"
 import InputLabel from "@/Components/InputLabel.vue"
 import TextInput from "@/Components/TextInput.vue"
 import PrimaryButton from "@/Components/PrimaryButton.vue"
+import SecondaryButton from "@/Components/SecondaryButton.vue"
 import SendFriendRequestButton from "@/Components/SendFriendRequestButton.vue"
 
 import { User } from "@/types"
@@ -31,34 +32,50 @@ function updateUser(user: User) {
     users.value.splice(indexOf, 1, user)
   }
 }
+
+function closeSearch() {
+  afterSearch.value = false
+  users.value = []
+}
 </script>
 
 <template>
   <div>
-    <form @submit.prevent="search">
-      <div>
-        <InputLabel for="search_users">Search other users</InputLabel>
-        <TextInput
-          id="search_users"
-          v-model="searchInput"
-          type="text"
-          class="mt-1 block w-[300px] max-w-full"
-          placeholder="Enter a name..." />
-        <div class="mt-1 text-xs text-gray-600">
-          Searching with empty input field will show every user.
+    <div class="flex justify-between">
+      <form @submit.prevent="search">
+        <div>
+          <InputLabel for="search_users">Search other users</InputLabel>
+          <TextInput
+            id="search_users"
+            v-model="searchInput"
+            type="text"
+            class="mt-1 block w-[300px] max-w-full"
+            placeholder="Enter a name..." />
+          <div class="mt-1 text-xs text-gray-600">
+            Searching with empty input field will show every user.
+          </div>
+          <div class="mt-2">
+            <PrimaryButton
+              type="submit"
+              :class="{ 'opacity-25': processing }"
+              :disabled="processing">
+              Search
+            </PrimaryButton>
+          </div>
         </div>
-        <div class="mt-2">
-          <PrimaryButton
-            type="submit"
-            :class="{ 'opacity-25': processing }"
-            :disabled="processing">
-            Search
-          </PrimaryButton>
-        </div>
+      </form>
+      <div v-if="afterSearch" class="shrink flex items-end">
+        <SecondaryButton
+          type="button"
+          :class="{ 'opacity-25': processing }"
+          :disabled="processing"
+          @click="closeSearch"
+          >Close search</SecondaryButton
+        >
       </div>
-    </form>
+    </div>
     <template v-if="afterSearch && !processing">
-      <div v-if="users.length > 0" class="mt-6">
+      <div v-if="users.length > 0" class="mt-6 max-h-[300px] overflow-y-auto">
         <div class="text-gray-600 text-sm ml-2">Results</div>
         <div class="my-2 border border-gray-200 rounded-lg">
           <div v-for="(user, index) in users" :key="user.id">
