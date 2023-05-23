@@ -35,6 +35,9 @@ async function search() {
           type="text"
           class="mt-1 block w-[300px]"
           placeholder="Enter a name..." />
+        <div class="mt-1 text-xs text-gray-600">
+          Searching with empty input field will show every user.
+        </div>
         <div class="mt-2">
           <PrimaryButton
             type="submit"
