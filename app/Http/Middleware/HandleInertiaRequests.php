@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -31,7 +32,9 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        /** @var User $user */
         $user = auth()->user();
+        $user->loadMissing(['sentFriendRequests', 'acceptableFriendRequests']);
 
         return array_merge(parent::share($request), [
             'auth' => [

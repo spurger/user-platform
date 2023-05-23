@@ -43,8 +43,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected $with = ['acceptableFriendRequests'];
-
     public function sentFriendRequests()
     {
         return $this->hasMany(FriendRequest::class, 'sender_id');

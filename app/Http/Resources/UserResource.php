@@ -27,7 +27,8 @@ class UserResource extends JsonResource
             'can_become_friend' => !$isSelf,
             'has_friend_request' => $this->acceptableFriendRequests()
                 ->where(['sender_id' => $user->id])->exists(),
-            'acceptableFriendRequests' => $this->acceptableFriendRequests,
+            'sentFriendRequests' => $this->whenLoaded('sentFriendRequests'),
+            'acceptableFriendRequests' => $this->whenLoaded('acceptableFriendRequests'),
         ];
     }
 }
