@@ -64,7 +64,7 @@ function updateUser(user: User) {
           <div v-for="(user, index) in users" :key="user.id">
             <div
               class="p-2 px-4 text-lg font-medium hover:bg-gray-50 flex items-center justify-between">
-              <div>{{ `${user.id} - ${user.name}` }}</div>
+              <div>{{ user.name }}</div>
               <SendFriendRequestButton
                 :user="user"
                 class="ml-6"
