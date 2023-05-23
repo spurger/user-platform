@@ -3,6 +3,8 @@ import { ref } from "vue"
 import InputLabel from "@/Components/InputLabel.vue"
 import TextInput from "@/Components/TextInput.vue"
 import PrimaryButton from "@/Components/PrimaryButton.vue"
+import SendFriendRequestButton from "@/Components/SendFriendRequestButton.vue"
+
 import { User } from "@/types"
 
 const searchInput = ref<string>("")
@@ -21,6 +23,13 @@ async function search() {
   users.value = await response.json()
   processing.value = false
   afterSearch.value = true
+}
+
+function updateUser(user: User) {
+  const indexOf = users.value.findIndex((u) => u.id === user.id)
+  if (indexOf > 0) {
+    users.value.splice(indexOf, 1, user)
+  }
 }
 </script>
 
@@ -53,8 +62,13 @@ async function search() {
         <div class="text-gray-600 text-sm ml-2">Results</div>
         <div class="my-2 border border-gray-200 rounded-lg">
           <div v-for="(user, index) in users" :key="user.id">
-            <div class="p-2 pl-4 text-lg font-medium hover:bg-gray-100">
-              {{ user.name }}
+            <div
+              class="p-2 px-4 text-lg font-medium hover:bg-gray-50 flex items-center justify-between">
+              <div>{{ `${user.id} - ${user.name}` }}</div>
+              <SendFriendRequestButton
+                :user="user"
+                class="ml-6"
+                @updated="updateUser" />
             </div>
             <hr v-if="index !== users.length - 1" />
           </div>

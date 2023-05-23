@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FriendRequestSent;
+use App\Http\Resources\UserResource;
+use App\Models\FriendRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,13 +14,43 @@ class UserController extends Controller
     {
         $query = $request->query('name');
 
-        $users = User::whereNot(
-            auth()->user()->getAuthIdentifierName(),
-            auth()->user()->getAuthIdentifier()
-        )->when($query, function ($q) use ($query) {
+        $users = User::when($query, function ($q) use ($query) {
             return $q->where('name', 'like', "%{$query}%");
         })->get();
 
-        return response()->json($users, 200);
+        return response()->json(UserResource::collection($users), 200);
+    }
+
+    public function sendFriendRequest(Request $request, User $recipient)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $exists = FriendRequest::where([
+            'sender_id' => $user->getKey(),
+            'recipient_id' => $recipient->getKey(),
+        ])->exists();
+
+        if ($exists) {
+            throw new \Exception ('Friend request already exists.');
+        }
+
+        if ($user->getKey() === $recipient->getKey()) {
+            throw new \Exception ('You cannot send a friend request to yourself.');
+        }
+
+        // TODO: validation
+        // check if both user is friend already
+
+        $friendRequest = FriendRequest::make();
+        $friendRequest->sender()->associate($user);
+        $friendRequest->recipient()->associate($recipient);
+        $friendRequest->save();
+
+        event(new FriendRequestSent($user, $recipient));
+
+        return response()->json(new UserResource($recipient->refresh()), 200);
+    }
+
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FriendRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,4 +42,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $with = ['acceptableFriendRequests'];
+
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'sender_id');
+    }
+
+    public function acceptableFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'recipient_id');
+    }
 }

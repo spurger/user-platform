@@ -36,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/search-users', [UserController::class, 'search'])->name('search-users');
+
+    Route::post('/send-friend-request/{recipient}', [
+        UserController::class, 'sendFriendRequest',
+    ])->name('send-friend-request');
 });
 
 require __DIR__ . '/auth.php';
