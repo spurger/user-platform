@@ -53,7 +53,7 @@ async function search() {
         <div class="text-gray-600 text-sm ml-2">Results</div>
         <div class="my-2 border border-gray-200 rounded-lg">
           <div v-for="(user, index) in users" :key="user.id">
-            <div class="p-2 pl-4 text-lg font-medium">
+            <div class="p-2 pl-4 text-lg font-medium hover:bg-gray-100">
               {{ user.name }}
             </div>
             <hr v-if="index !== users.length - 1" />
