@@ -42,7 +42,7 @@ function updateUser(user: User) {
           id="search_users"
           v-model="searchInput"
           type="text"
-          class="mt-1 block w-[300px]"
+          class="mt-1 block w-[300px] max-w-full"
           placeholder="Enter a name..." />
         <div class="mt-1 text-xs text-gray-600">
           Searching with empty input field will show every user.
