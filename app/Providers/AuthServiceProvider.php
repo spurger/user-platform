@@ -26,5 +26,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('cancel-friend-request', function (User $user, FriendRequest $friendRequest) {
             return $friendRequest->sender_id === $user->getKey();
         });
+
+        Gate::define('respond-to-friend-request', function (User $user, FriendRequest $friendRequest) {
+            return $friendRequest->recipient_id === $user->getKey();
+        });
     }
 }

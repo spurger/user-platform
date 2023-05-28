@@ -35,10 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/search-users', [UserController::class, 'search'])->name('search-users');
-
-    Route::get('/sent-friend-requests', [UserController::class, 'sentFriendRequests'])
-        ->name('sent-friend-requests');
+    Route::get('/users-and-friend-requests', [UserController::class, 'usersAndFriendRequests'])
+        ->name('users-and-friend-requests');
 
     Route::post('/send-friend-request/{recipient}', [
         UserController::class, 'sendFriendRequest',
@@ -47,6 +45,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cancel-sent-friend-request/{friendRequest}', [
         UserController::class, 'cancelSentFriendRequest',
     ])->name('cancel-sent-friend-request');
+
+    Route::post('/accept-friend-request/{friendRequest}', [
+        UserController::class, 'acceptFriendRequest',
+    ])->name('accept-friend-request');
+
+    Route::post('/refuse-friend-request/{friendRequest}', [
+        UserController::class, 'refuseFriendRequest',
+    ])->name('refuse-friend-request');
 });
 
 require __DIR__ . '/auth.php';

@@ -34,14 +34,9 @@ const showingNavigationDropdown = ref(false)
                   Dashboard
                 </NavLink>
                 <NavLink
-                  :href="route('search-users')"
-                  :active="route().current('search-users')">
-                  Search users
-                </NavLink>
-                <NavLink
-                  :href="route('sent-friend-requests')"
-                  :active="route().current('sent-friend-requests')">
-                  Sent friend requests
+                  :href="route('users-and-friend-requests')"
+                  :active="route().current('users-and-friend-requests')">
+                  Users and friend requests
                 </NavLink>
               </div>
             </div>
@@ -134,14 +129,9 @@ const showingNavigationDropdown = ref(false)
               Dashboard
             </ResponsiveNavLink>
             <ResponsiveNavLink
-              :href="route('search-users')"
-              :active="route().current('search-users')">
-              Search users
-            </ResponsiveNavLink>
-            <ResponsiveNavLink
-              :href="route('sent-friend-requests')"
-              :active="route().current('sent-friend-requests')">
-              Sent friend requests
+              :href="route('users-and-friend-requests')"
+              :active="route().current('users-and-friend-requests')">
+              Users and friend requests
             </ResponsiveNavLink>
           </div>
 

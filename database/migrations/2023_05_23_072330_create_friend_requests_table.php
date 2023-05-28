@@ -22,6 +22,8 @@ return new class extends Migration
 
             $table->boolean('seen_by_recipient')->default(false);
 
+            $table->boolean('refused')->default(false);
+
             $table->unique(['sender_id', 'recipient_id']);
 
             $table->timestamps();

@@ -24,12 +24,6 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->when($isSelf, $this->email),
-            'can_become_friend' => !$isSelf,
-            'has_friend_request' => $this->whenLoaded(
-                'acceptableFriendRequests',
-                function () use ($isSelf) {
-                    return !$isSelf && count($this->acceptableFriendRequests) === 1;
-                }),
             'sentFriendRequests' => $this->whenLoaded('sentFriendRequests', function () {
                 return FriendRequestResource::collection($this->sentFriendRequests);
             }),

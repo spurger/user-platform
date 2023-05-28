@@ -10,6 +10,10 @@ class FriendRequest extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'refused' => 'boolean',
+    ];
+
     public function sender()
     {
         return $this->belongsTo(User::class);

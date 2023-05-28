@@ -22,11 +22,8 @@ class FriendRequestResource extends JsonResource
             'recipient' => $this->whenLoaded('recipient', function () {
                 return new UserResource($this->recipient);
             }),
-            'seen_by_recipient' => $this->when(
-                $this->recipient_id === auth()->user()->getAuthIdentifier(),
-                $this->seen_by_recipient
-            ),
-            'created_at' => $this->created_at,
+            'refused' => $this->refused,
+            'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
 }

@@ -5,7 +5,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue"
 import InputLabel from "@/Components/InputLabel.vue"
 import TextInput from "@/Components/TextInput.vue"
 import PrimaryButton from "@/Components/PrimaryButton.vue"
-import SendFriendRequestButton from "@/Components/SendFriendRequestButton.vue"
+import FriendRequestState from "@/Components/FriendRequestState.vue"
 import { User } from "@/types"
 
 const props = defineProps<{
@@ -20,7 +20,7 @@ const form = useForm({
 const sendFriendRequestForm = useForm({})
 
 function search() {
-  form.get(route("search-users"))
+  form.get(route("users-and-friend-requests"))
 }
 
 function sendFriendRequest(recipient: User) {
@@ -31,12 +31,12 @@ function sendFriendRequest(recipient: User) {
 </script>
 
 <template>
-  <Head title="Search users" />
+  <Head title="Users and friend requests" />
 
   <AuthenticatedLayout>
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Search users
+        Users and friend requests
       </h2>
     </template>
 
@@ -71,7 +71,18 @@ function sendFriendRequest(recipient: User) {
               <div
                 class="p-2 px-4 text-lg font-medium hover:bg-gray-50 flex items-center justify-between">
                 <div>{{ user.name }}</div>
-                <SendFriendRequestButton
+                <div class="mr-auto flex items-center">
+                  <div class="w-3 h-3 bg-blue-500 ml-3"></div>
+                  <div>
+                    A:{{ user.acceptableFriendRequests.length || 0 }}
+                    {{ user.acceptableFriendRequests[0]?.refused ? "R" : "" }}
+                  </div>
+                  <div class="ml-1">
+                    S:{{ user.sentFriendRequests.length || 0 }}
+                    {{ user.sentFriendRequests[0]?.refused ? "R" : "" }}
+                  </div>
+                </div>
+                <FriendRequestState
                   :user="user"
                   :processing="sendFriendRequestForm.processing"
                   class="ml-6 text-right"
