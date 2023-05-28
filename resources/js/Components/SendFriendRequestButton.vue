@@ -1,27 +1,15 @@
 <script setup lang="ts">
 import SecondaryButton from "@/Components/SecondaryButton.vue"
-import { useFetch } from "@/fetch"
 import type { User } from "@/types"
 
-const props = defineProps<{
+defineProps<{
   user: User
+  processing: boolean
 }>()
 
-const emit = defineEmits<{
-  (e: "updated", user: User): void
+defineEmits<{
+  (e: "clicked"): void
 }>()
-
-const api = useFetch()
-
-async function sendFriendRequest(recipient: User) {
-  api
-    .call(route("send-friend-request", { recipient: props.user }), {
-      method: "POST",
-    })
-    .then((user) => {
-      emit("updated", user as User)
-    })
-}
 </script>
 
 <template>
@@ -32,8 +20,9 @@ async function sendFriendRequest(recipient: User) {
     <SecondaryButton
       v-else
       type="button"
-      :disabled="api.processing.value"
-      @click="sendFriendRequest(user)">
+      :class="{ 'opacity-25': processing }"
+      :disabled="processing"
+      @click="$emit('clicked')">
       Send friend request
     </SecondaryButton>
   </div>

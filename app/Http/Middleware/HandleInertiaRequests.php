@@ -34,14 +34,10 @@ class HandleInertiaRequests extends Middleware
     {
         /** @var User $user */
         $user = auth()->user();
-        if ($user) {
-            $user->loadMissing(['sentFriendRequests.recipient', 'acceptableFriendRequests.sender']);
-        }
 
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user ? new UserResource($user) : null,
-                'csrf_token' => csrf_token(),
             ],
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [

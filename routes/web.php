@@ -37,6 +37,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/search-users', [UserController::class, 'search'])->name('search-users');
 
+    Route::get('/sent-friend-requests', [UserController::class, 'sentFriendRequests'])
+        ->name('sent-friend-requests');
+
     Route::post('/send-friend-request/{recipient}', [
         UserController::class, 'sendFriendRequest',
     ])->name('send-friend-request');

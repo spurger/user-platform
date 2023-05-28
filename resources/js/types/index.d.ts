@@ -22,6 +22,5 @@ export type PageProps<
 > = T & {
   auth: {
     user: AuthUser
-    csrf_token: string
   }
 }

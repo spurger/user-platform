@@ -3,23 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Events\FriendRequestSent;
+use App\Http\Resources\FriendRequestResource;
 use App\Http\Resources\UserResource;
 use App\Models\FriendRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
     public function search(Request $request)
     {
-        $query = $request->query('name');
+        $input = $request->query('input', "");
 
-        $users = User::when($query, function ($q) use ($query) {
-            return $q->where('name', 'like', "%{$query}%");
-        })->get();
+        if ($request->has('input')) {
+            /** @var User $authUser */
+            $authUser = auth()->user();
 
-        return response()->json(UserResource::collection($users), 200);
+            $users = User::with(['acceptableFriendRequests' => function ($query) use ($authUser) {
+                $query->where('sender_id', $authUser->getKey());
+            }])->when($input, function ($q) use ($input) {
+                $q->where('name', 'like', "%{$input}%");
+            })->get();
+        } else {
+            $users = [];
+        }
+
+        return Inertia::render('SearchUsers', [
+            'input' => $input,
+            'users' => UserResource::collection($users),
+        ]);
+    }
+
+    public function sentFriendRequests()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $friendRequests = $user->sentFriendRequests()->with('recipient')->get();
+
+        return Inertia::render('SentFriendRequests', [
+            'friendRequests' => FriendRequestResource::collection($friendRequests),
+        ]);
     }
 
     public function sendFriendRequest(Request $request, User $recipient)
@@ -50,7 +76,9 @@ class UserController extends Controller
 
         event(new FriendRequestSent($user, $recipient));
 
-        return response()->json(new UserResource($recipient->refresh()), 200);
+        return redirect()->route('search-users', [
+            'input' => $request->query('input', ''),
+        ]);
     }
 
     public function cancelSentFriendRequest(Request $request, FriendRequest $friendRequest)
@@ -61,6 +89,6 @@ class UserController extends Controller
 
         $friendRequest->delete();
 
-        return response()->json([], 200);
+        return redirect()->route('sent-friend-requests');
     }
 }
