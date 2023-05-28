@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import SecondaryButton from "@/Components/SecondaryButton.vue"
+import { useFetch } from "@/fetch"
 import type { User } from "@/types"
-import { usePage } from "@inertiajs/vue3"
-import { ref } from "vue"
 
 const props = defineProps<{
   user: User
@@ -12,26 +11,16 @@ const emit = defineEmits<{
   (e: "updated", user: User): void
 }>()
 
-const csrf_token = usePage().props.auth.csrf_token
-
-const processing = ref(false)
+const api = useFetch()
 
 async function sendFriendRequest(recipient: User) {
-  processing.value = true
-  const response = await fetch(
-    route("send-friend-request", { recipient: props.user }),
-    {
+  api
+    .call(route("send-friend-request", { recipient: props.user }), {
       method: "POST",
-      headers: {
-        "X-CSRF-Token": csrf_token,
-      },
-    }
-  )
-  processing.value = false
-  if (response.ok) {
-    const user = await response.json()
-    emit("updated", user)
-  }
+    })
+    .then((user) => {
+      emit("updated", user as User)
+    })
 }
 </script>
 
@@ -43,7 +32,7 @@ async function sendFriendRequest(recipient: User) {
     <SecondaryButton
       v-else
       type="button"
-      :disabled="processing"
+      :disabled="api.processing.value"
       @click="sendFriendRequest(user)">
       Send friend request
     </SecondaryButton>

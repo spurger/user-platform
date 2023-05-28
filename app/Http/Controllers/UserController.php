@@ -52,5 +52,11 @@ class UserController extends Controller
         return response()->json(new UserResource($recipient->refresh()), 200);
     }
 
+    public function cancelSentFriendRequest(Request $request, FriendRequest $friendRequest)
+    {
+        $friendRequest->delete();
+
+        return response()->json([], 200);
+    }
     }
 }

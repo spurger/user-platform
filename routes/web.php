@@ -40,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/send-friend-request/{recipient}', [
         UserController::class, 'sendFriendRequest',
     ])->name('send-friend-request');
+
+    Route::delete('/cancel-sent-friend-request/{friendRequest}', [
+        UserController::class, 'cancelSentFriendRequest',
+    ])->name('cancel-sent-friend-request');
 });
 
 require __DIR__ . '/auth.php';
