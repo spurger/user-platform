@@ -41,7 +41,7 @@ function closeSearch() {
 
 <template>
   <div>
-    <div class="flex justify-between">
+    <div class="flex justify-between flex-wrap gap-2">
       <form @submit.prevent="search">
         <div>
           <InputLabel for="search_users">Search other users</InputLabel>
@@ -67,11 +67,12 @@ function closeSearch() {
       <div v-if="afterSearch" class="shrink flex items-end">
         <SecondaryButton
           type="button"
+          class="whitespace-nowrap"
           :class="{ 'opacity-25': processing }"
           :disabled="processing"
-          @click="closeSearch"
-          >Close search</SecondaryButton
-        >
+          @click="closeSearch">
+          Close search
+        </SecondaryButton>
       </div>
     </div>
     <template v-if="afterSearch && !processing">
@@ -84,7 +85,7 @@ function closeSearch() {
               <div>{{ user.name }}</div>
               <SendFriendRequestButton
                 :user="user"
-                class="ml-6"
+                class="ml-6 text-right"
                 @updated="updateUser" />
             </div>
             <hr v-if="index !== users.length - 1" />
