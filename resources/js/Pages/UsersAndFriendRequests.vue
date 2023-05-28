@@ -71,17 +71,6 @@ function sendFriendRequest(recipient: User) {
               <div
                 class="p-2 px-4 text-lg font-medium hover:bg-gray-50 flex items-center justify-between">
                 <div>{{ user.name }}</div>
-                <div class="mr-auto flex items-center">
-                  <div class="w-3 h-3 bg-blue-500 ml-3"></div>
-                  <div>
-                    A:{{ user.acceptableFriendRequests.length || 0 }}
-                    {{ user.acceptableFriendRequests[0]?.refused ? "R" : "" }}
-                  </div>
-                  <div class="ml-1">
-                    S:{{ user.sentFriendRequests.length || 0 }}
-                    {{ user.sentFriendRequests[0]?.refused ? "R" : "" }}
-                  </div>
-                </div>
                 <FriendRequestState
                   :user="user"
                   :processing="sendFriendRequestForm.processing"
