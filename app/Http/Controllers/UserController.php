@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\FriendRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -54,6 +55,10 @@ class UserController extends Controller
 
     public function cancelSentFriendRequest(Request $request, FriendRequest $friendRequest)
     {
+        if (!Gate::allows('cancel-friend-request', $friendRequest)) {
+            abort(403);
+        }
+
         $friendRequest->delete();
 
         return response()->json([], 200);

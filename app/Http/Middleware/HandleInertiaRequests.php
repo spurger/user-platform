@@ -35,7 +35,7 @@ class HandleInertiaRequests extends Middleware
         /** @var User $user */
         $user = auth()->user();
         if ($user) {
-            $user->loadMissing(['sentFriendRequests.recipient', 'acceptableFriendRequests']);
+            $user->loadMissing(['sentFriendRequests.recipient', 'acceptableFriendRequests.sender']);
         }
 
         return array_merge(parent::share($request), [
