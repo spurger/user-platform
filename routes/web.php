@@ -53,6 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/refuse-friend-request/{friendRequest}', [
         UserController::class, 'refuseFriendRequest',
     ])->name('refuse-friend-request');
+
+    Route::delete('/remove-friend/{friend}', [UserController::class, 'removeFriend'])
+        ->name('remove-friend');
 });
 
 require __DIR__ . '/auth.php';

@@ -34,6 +34,9 @@ class HandleInertiaRequests extends Middleware
     {
         /** @var User $user */
         $user = auth()->user();
+        if (!is_null($user)) {
+            $user->loadMissing('friends');
+        }
 
         return array_merge(parent::share($request), [
             'auth' => [

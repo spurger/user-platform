@@ -30,6 +30,9 @@ class UserResource extends JsonResource
             'acceptableFriendRequests' => $this->whenLoaded('acceptableFriendRequests', function () {
                 return FriendRequestResource::collection($this->acceptableFriendRequests);
             }),
+            'friends' => $this->whenLoaded('friends', function () {
+                return UserResource::collection($this->friends);
+            }),
         ];
     }
 }

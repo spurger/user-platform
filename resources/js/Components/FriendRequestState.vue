@@ -26,6 +26,10 @@ const form = useForm({})
  * If authenticated user gets a friend request, it will be a sent friend request.
  */
 
+const isFriend = computed<boolean>(() => {
+  return props.user.friends.length > 0
+})
+
 const hasSentFriendRequest = computed<boolean>(() => {
   return props.user.sentFriendRequests.length > 0
 })
@@ -81,6 +85,12 @@ function refuse() {
     )
   }
 }
+
+function removeFriend() {
+  if (isFriend.value) {
+    form.delete(route("remove-friend", { friend: props.user }))
+  }
+}
 </script>
 
 <template>
@@ -88,7 +98,12 @@ function refuse() {
     v-if="!isSelf"
     class="flex flex-wrap items-center gap-x-4 gap-y-2 justify-end">
     <div class="text-sm whitespace-nowrap tracking-tight">
-      <span v-if="acceptableRefused" class="text-red-600">
+      <span
+        v-if="isFriend"
+        class="px-2 py-1 bg-emerald-600 text-white rounded-md">
+        Friend
+      </span>
+      <span v-else-if="acceptableRefused" class="text-red-600">
         Your friend request was refused.
       </span>
       <span class="text-amber-700" v-else-if="sentRefused">
@@ -100,7 +115,7 @@ function refuse() {
     </div>
     <div class="inline-flex items-center gap-2">
       <SecondaryButton
-        v-if="!hasFriendRequest"
+        v-if="!isFriend && !hasFriendRequest"
         type="button"
         :class="{ 'opacity-25': form.processing }"
         :disabled="form.processing"
@@ -108,7 +123,7 @@ function refuse() {
         Send friend request
       </SecondaryButton>
       <SecondaryButton
-        v-if="hasAcceptableFriendRequest && !acceptableRefused"
+        v-if="!isFriend && hasAcceptableFriendRequest && !acceptableRefused"
         type="button"
         :class="{ 'opacity-25': form.processing }"
         :disabled="form.processing"
@@ -116,7 +131,7 @@ function refuse() {
         Cancel
       </SecondaryButton>
       <PrimaryButton
-        v-if="hasSentFriendRequest"
+        v-if="!isFriend && hasSentFriendRequest"
         type="button"
         :class="{ 'opacity-25': form.processing }"
         :disabled="form.processing"
@@ -124,7 +139,7 @@ function refuse() {
         Accept
       </PrimaryButton>
       <DangerButton
-        v-if="hasSentFriendRequest"
+        v-if="!isFriend && hasSentFriendRequest"
         type="button"
         :class="{
           'opacity-25': form.processing || sentRefused,
@@ -132,6 +147,14 @@ function refuse() {
         :disabled="form.processing || sentRefused"
         @click="refuse">
         Refuse
+      </DangerButton>
+      <DangerButton
+        v-if="isFriend"
+        type="button"
+        :class="{ 'opacity-25': form.processing }"
+        :disabled="form.processing"
+        @click="removeFriend">
+        Remove
       </DangerButton>
     </div>
   </div>

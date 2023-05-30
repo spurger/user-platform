@@ -25,6 +25,8 @@ class UserController extends Controller
                 $query->where('sender_id', $authUser->getKey());
             }])->with(['sentFriendRequests' => function ($query) use ($authUser) {
                 $query->where('recipient_id', $authUser->getKey());
+            }])->with(['friends' => function ($query) use ($authUser) {
+                $query->where('friend_id', $authUser->getKey());
             }])->when($input, function ($q) use ($input) {
                 $q->where('name', 'like', "%{$input}%");
             })->get();
@@ -62,8 +64,9 @@ class UserController extends Controller
             throw new \Exception ('You cannot send a friend request to yourself.');
         }
 
-        // TODO: validation
-        // check if both user is friend already
+        if ($user->friends->where('id', $recipient->id)->isNotEmpty()) {
+            throw new \Exception ('This person is already your friend.');
+        }
 
         $friendRequest = FriendRequest::make();
         $friendRequest->sender()->associate($user);
@@ -98,7 +101,9 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try {
-            // Save friendRequest as a friend model/pivot
+            /** @var User $authUser */
+            $authUser = auth()->user();
+            $authUser->addFriend($friendRequest->sender_id);
 
             $friendRequest->delete();
 
@@ -119,6 +124,24 @@ class UserController extends Controller
 
         $friendRequest->refused = true;
         $friendRequest->save();
+
+        return back();
+    }
+
+    public function removeFriend(Request $request, User $friend)
+    {
+        /** @var User $authUser */
+        $authUser = auth()->user();
+
+        DB::beginTransaction();
+        try {
+            $authUser->removeFriend($friend);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return back();
     }

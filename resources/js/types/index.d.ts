@@ -4,6 +4,7 @@ export interface User {
   email: string
   sentFriendRequests: FriendRequest[]
   acceptableFriendRequests: FriendRequest[]
+  friends: User[]
 }
 
 export interface FriendRequest {
